@@ -1,0 +1,32 @@
+{
+  "contractName": "PrivatePropertyTrading",
+  "version": "2.0.0",
+  "network": "sepolia",
+  "contractAddress": "0x2f1Ec1ef0931C4208c60b5d7169CdEbAC3C9cE24",
+  "deployer": "0x80337135628ac908EDccb19C99b217ecd2282Ab2",
+  "deploymentTime": "2025-10-17T07:17:38.806Z",
+  "transactionHash": "0x06f89aedc52153346c3d7da310b083b13c0367b8acfac1473ed855692431112d",
+  "kmsGeneration": 1,
+  "numPausers": 3,
+  "pauserAddresses": [
+    "0x80337135628ac908EDccb19C99b217ecd2282Ab2",
+    "0x80337135628ac908EDccb19C99b217ecd2282Ab2",
+    "0x80337135628ac908EDccb19C99b217ecd2282Ab2"
+  ],
+  "features": {
+    "multiPauserSupport": true,
+    "kmsGenerationTracking": true,
+    "decryptionRequestSystem": true,
+    "transactionReRandomization": true,
+    "pauseUnpauseControl": true,
+    "gatewayV2Compliance": true
+  },
+  "links": {
+    "etherscan": "https://sepolia.etherscan.io/address/0x2f1Ec1ef0931C4208c60b5d7169CdEbAC3C9cE24",
+    "transaction": "https://sepolia.etherscan.io/tx/0x06f89aedc52153346c3d7da310b083b13c0367b8acfac1473ed855692431112d"
+  },
+  "verification": {
+    "command": "npx hardhat verify --network sepolia 0x2f1Ec1ef0931C4208c60b5d7169CdEbAC3C9cE24 \"[\\\"0x80337135628ac908EDccb19C99b217ecd2282Ab2\\\",\\\"0x80337135628ac908EDccb19C99b217ecd2282Ab2\\\",\\\"0x80337135628ac908EDccb19C99b217ecd2282Ab2\\\"]\" 1",
+    "verified": false
+  }
+}
