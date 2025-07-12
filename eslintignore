@@ -1,0 +1,13 @@
+node_modules/
+dist/
+build/
+coverage/
+artifacts/
+cache/
+typechain-types/
+*.config.js
+*.config.ts
+*.config.cjs
+scripts/*.cjs
+.husky/
+.github/
