@@ -1,8 +1,8 @@
 # 🏠 Private Property Trading Platform
 
-[![Test Workflow](https://github.com/YOUR_USERNAME/private-property-platform/actions/workflows/test.yml/badge.svg)](https://github.com/YOUR_USERNAME/private-property-platform/actions/workflows/test.yml)
-[![Security Audit](https://github.com/YOUR_USERNAME/private-property-platform/actions/workflows/security.yml/badge.svg)](https://github.com/YOUR_USERNAME/private-property-platform/actions/workflows/security.yml)
-[![codecov](https://codecov.io/gh/YOUR_USERNAME/private-property-platform/branch/main/graph/badge.svg)](https://codecov.io/gh/YOUR_USERNAME/private-property-platform)
+[![Test Workflow](https://github.com/DeangeloKreiger/PropertyTrading/actions/workflows/test.yml/badge.svg)](https://github.com/DeangeloKreiger/PropertyTrading/actions/workflows/test.yml)
+[![Security Audit](https://github.com/DeangeloKreiger/PropertyTrading/actions/workflows/security.yml/badge.svg)](https://github.com/DeangeloKreiger/PropertyTrading/actions/workflows/security.yml)
+[![codecov](https://codecov.io/gh/DeangeloKreiger/PropertyTrading/branch/main/graph/badge.svg)](https://codecov.io/gh/DeangeloKreiger/PropertyTrading)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Solidity](https://img.shields.io/badge/Solidity-0.8.24-e6e6e6?logo=solidity)](https://soliditylang.org/)
 [![Ethereum](https://img.shields.io/badge/Ethereum-Sepolia-3C3C3D?logo=ethereum)](https://sepolia.etherscan.io/)
@@ -85,8 +85,8 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/private-property-platform.git
-cd private-property-platform
+git clone https://github.com/DeangeloKreiger/PropertyTrading.git
+cd PropertyTrading
 
 # Install dependencies (use --legacy-peer-deps if needed)
 npm install --legacy-peer-deps
