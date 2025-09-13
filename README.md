@@ -13,7 +13,7 @@
 
 **🌐 Live Application**: [https://deangelokreiger.github.io/PropertyTrading/](https://deangelokreiger.github.io/PropertyTrading/)
 
-**📹 Demo Video**: [demo.mp4](./demo.mp4)
+**📹 Demo Video**: demo.mp4
 
 Try the live application on Sepolia testnet! Connect your MetaMask wallet and explore property registration, listing, and trading features.
 
