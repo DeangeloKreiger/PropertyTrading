@@ -35,8 +35,8 @@ jobs:
         env:
           NODE_ENV: production
           VITE_BASE_PATH: /PropertyTrading/
-          VITE_CONTRACT_ADDRESS: ${{ secrets.VITE_CONTRACT_ADDRESS }}
-          VITE_WALLETCONNECT_PROJECT_ID: ${{ secrets.VITE_WALLETCONNECT_PROJECT_ID }}
+          VITE_CONTRACT_ADDRESS: ${{ secrets.VITE_CONTRACT_ADDRESS || '0xD90c73b42952565F334E5FB6C349B0005ac06669' }}
+          VITE_WALLETCONNECT_PROJECT_ID: ${{ secrets.VITE_WALLETCONNECT_PROJECT_ID || '' }}
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
