@@ -1,3 +1,17 @@
+// Immediate test - set content BEFORE any imports
+console.log('=== MAIN.TS START ===')
+if (typeof window !== 'undefined') {
+  window.addEventListener('DOMContentLoaded', () => {
+    const app = document.getElementById('app')
+    if (app) {
+      app.innerHTML = '<div style="color: white; padding: 20px; text-align: center;"><h1>TEST: JavaScript is running!</h1><p>If you see this, JS execution works.</p></div>'
+      console.log('=== TEST CONTENT SET ===')
+    } else {
+      console.error('=== APP DIV NOT FOUND ===')
+    }
+  }, { once: true })
+}
+
 import './style.css'
 import { getAccount, connect, disconnect, watchAccount } from '@wagmi/core'
 import { config, setWalletConnectProjectId, getWalletConnectProjectId } from './config/wagmi'
@@ -7,6 +21,9 @@ import { loadingState } from './utils/loading'
 import * as Contract from './utils/contract'
 import type { Property } from './utils/contract'
 import { CONTRACT_ADDRESS } from './config/contracts'
+
+console.log('=== ALL IMPORTS SUCCESSFUL ===')
+console.log('CONTRACT_ADDRESS:', CONTRACT_ADDRESS)
 
 let currentAccount: string | undefined
 
@@ -649,74 +666,23 @@ function showSettingsModal() {
   })
 }
 
-// Initialize with early debugging
-console.log('Main.ts loaded successfully')
-
-// Add immediate visual feedback
-const setAppContent = (content: string) => {
-  const appDiv = document.getElementById('app')
-  if (appDiv) {
-    appDiv.innerHTML = content
-  }
-}
-
-// Show loading state immediately
-window.addEventListener('load', () => {
-  console.log('Window loaded')
-  setAppContent(`
-    <div style="color: white; padding: 20px; text-align: center;">
-      <h2>Initializing...</h2>
-      <p>Loading application...</p>
-    </div>
-  `)
-})
-
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('DOM loaded, initializing app')
-  setAppContent(`
-    <div style="color: white; padding: 20px; text-align: center;">
-      <h2>Starting Application...</h2>
-      <p>Contract Address: ${CONTRACT_ADDRESS || 'NOT SET'}</p>
-    </div>
-  `)
-
+// Real initialization - this will run AFTER the test above
+setTimeout(() => {
+  console.log('=== STARTING REAL INITIALIZATION ===')
   try {
-    console.log('Calling initializeApp()')
     initializeApp()
-    console.log('initializeApp() completed successfully')
+    console.log('=== INITIALIZATION COMPLETE ===')
   } catch (error) {
-    console.error('Failed to initialize app:', error)
-    setAppContent(`
-      <div style="color: white; padding: 20px; text-align: center;">
-        <h1 style="color: #ef5350;">Application Error</h1>
-        <p>Failed to initialize. Check console for details.</p>
-        <pre style="color: #ef5350; text-align: left; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; max-width: 800px; margin: 20px auto; overflow-x: auto;">${String(error)}\n\nStack: ${error instanceof Error ? error.stack : 'N/A'}</pre>
-        <p style="margin-top: 20px;">Contract: ${CONTRACT_ADDRESS || 'UNDEFINED'}</p>
-      </div>
-    `)
+    console.error('=== INITIALIZATION FAILED ===', error)
+    const app = document.getElementById('app')
+    if (app) {
+      app.innerHTML = `
+        <div style="color: white; padding: 20px; text-align: center;">
+          <h1 style="color: #ef5350;">Initialization Error</h1>
+          <p>${error}</p>
+          <p>Contract: ${CONTRACT_ADDRESS || 'UNDEFINED'}</p>
+        </div>
+      `
+    }
   }
-})
-
-// Global error handler
-window.addEventListener('error', (event) => {
-  console.error('Global error caught:', event.error)
-  setAppContent(`
-    <div style="color: white; padding: 20px; text-align: center;">
-      <h1 style="color: #ef5350;">Runtime Error</h1>
-      <p>${event.message}</p>
-      <pre style="color: #ef5350; text-align: left; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; max-width: 800px; margin: 20px auto; overflow-x: auto;">${event.error ? String(event.error.stack || event.error) : 'Unknown error'}</pre>
-    </div>
-  `)
-})
-
-// Unhandled promise rejection handler
-window.addEventListener('unhandledrejection', (event) => {
-  console.error('Unhandled promise rejection:', event.reason)
-  setAppContent(`
-    <div style="color: white; padding: 20px; text-align: center;">
-      <h1 style="color: #ef5350;">Promise Rejection</h1>
-      <p>An async operation failed</p>
-      <pre style="color: #ef5350; text-align: left; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; max-width: 800px; margin: 20px auto; overflow-x: auto;">${String(event.reason)}</pre>
-    </div>
-  `)
-})
+}, 1000)
