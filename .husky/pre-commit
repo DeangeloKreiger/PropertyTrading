@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+
+# Run lint-staged with explicit config
+npx lint-staged --config lintstagedrc.json
+
+# Run Solidity linter with explicit config
+npx solhint 'contracts/**/*.sol' --config solhint.json
+
+# Check TypeScript types
+npx tsc --noEmit
+
+echo "✅ Pre-commit checks passed!"

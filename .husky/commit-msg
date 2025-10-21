@@ -1,1 +1,4 @@
+#!/usr/bin/env sh
 
+# Run commitlint to validate commit message with explicit config
+npx --no -- commitlint --edit $1 --config commitlint.config.js
