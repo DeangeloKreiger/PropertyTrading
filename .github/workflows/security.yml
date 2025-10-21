@@ -1,0 +1,209 @@
+name: Security Audit
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    # Run security audit weekly on Monday at 00:00 UTC
+    - cron: '0 0 * * 1'
+  workflow_dispatch:
+
+jobs:
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Run NPM Audit
+        run: npm audit --audit-level=moderate
+        continue-on-error: true
+
+      - name: Run Audit CI
+        run: npx audit-ci --moderate
+        continue-on-error: true
+
+      - name: Check for known vulnerabilities
+        run: |
+          echo "📊 Vulnerability Summary:"
+          npm audit --json > audit-results.json
+          cat audit-results.json
+        continue-on-error: true
+
+      - name: Upload audit results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-audit-results
+          path: audit-results.json
+          retention-days: 30
+
+  solidity-analysis:
+    name: Solidity Security Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Run Solhint
+        run: npm run lint:sol
+        continue-on-error: true
+
+      - name: Check for common vulnerabilities
+        run: |
+          echo "🔍 Checking for common Solidity vulnerabilities..."
+
+          # Check for reentrancy patterns
+          if grep -r "call{value:" contracts/ ; then
+            echo "⚠️  Found potential reentrancy pattern with call{value:}"
+          fi
+
+          # Check for tx.origin usage
+          if grep -r "tx.origin" contracts/ ; then
+            echo "⚠️  Found tx.origin usage (use msg.sender instead)"
+          fi
+
+          # Check for selfdestruct
+          if grep -r "selfdestruct" contracts/ ; then
+            echo "⚠️  Found selfdestruct usage"
+          fi
+
+          # Check for delegatecall
+          if grep -r "delegatecall" contracts/ ; then
+            echo "⚠️  Found delegatecall usage - review carefully"
+          fi
+
+          echo "✅ Manual vulnerability check complete"
+        continue-on-error: true
+
+  dos-protection-check:
+    name: DoS Protection Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check for DoS vulnerabilities
+        run: |
+          echo "🛡️  Checking for DoS protection patterns..."
+
+          # Check for unbounded loops
+          if grep -r "for.*length" contracts/ ; then
+            echo "⚠️  Found potential unbounded loop - ensure gas limits"
+          fi
+
+          # Check for array operations
+          if grep -r "\.push\|\.pop" contracts/ ; then
+            echo "ℹ️  Found array operations - ensure bounded operations"
+          fi
+
+          # Check for fallback functions
+          if grep -r "fallback\|receive" contracts/ ; then
+            echo "ℹ️  Found fallback/receive functions - review gas usage"
+          fi
+
+          echo "✅ DoS protection check complete"
+        continue-on-error: true
+
+  gas-optimization-check:
+    name: Gas Optimization Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Run gas optimization analysis
+        run: |
+          echo "⛽ Checking for gas optimization opportunities..."
+
+          # Check for storage vs memory usage
+          if grep -r "storage" contracts/ ; then
+            echo "ℹ️  Found storage usage - consider memory for temporary vars"
+          fi
+
+          # Check for view/pure functions
+          if grep -r "function.*public\|function.*external" contracts/ | grep -v "view\|pure" ; then
+            echo "ℹ️  Found state-changing functions - review gas costs"
+          fi
+
+          # Check for require messages
+          if grep -r "require(" contracts/ | wc -l ; then
+            echo "ℹ️  Found require statements - consider custom errors for gas savings"
+          fi
+
+          echo "✅ Gas optimization check complete"
+        continue-on-error: true
+
+      - name: Generate gas report
+        run: REPORT_GAS=true npm test
+        continue-on-error: true
+
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: moderate
+          deny-licenses: GPL-3.0, AGPL-3.0
+
+  code-scanning:
+    name: CodeQL Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript, typescript
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        continue-on-error: true
