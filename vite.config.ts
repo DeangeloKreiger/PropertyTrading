@@ -14,15 +14,16 @@ export default defineConfig({
     target: 'es2020',
     rollupOptions: {
       output: {
-        manualChunks: {
-          'wagmi': ['@wagmi/core', '@wagmi/connectors'],
-          'viem': ['viem'],
-        }
+        // Remove manual chunks to avoid circular dependency issues
+        manualChunks: undefined
       }
     }
   },
   esbuild: {
     target: 'es2020'
+  },
+  optimizeDeps: {
+    include: ['viem', '@wagmi/core', '@wagmi/connectors']
   },
   server: {
     port: 1291,
