@@ -2,10 +2,10 @@ import { defineConfig } from 'vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  // Set base path based on deployment platform
-  // Vercel: use '/' (root path)
-  // GitHub Pages: use '/PropertyTrading/'
-  base: process.env.VERCEL ? '/' : (process.env.NODE_ENV === 'production' ? '/PropertyTrading/' : './'),
+  // Use environment variable for base path
+  // Default to '/' for Vercel and local dev
+  // GitHub Pages CI sets VITE_BASE_PATH to '/PropertyTrading/'
+  base: process.env.VITE_BASE_PATH || '/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
