@@ -1,16 +1,22 @@
-// Immediate test - set content BEFORE any imports
+// Simplified initialization - catch errors early
 console.log('=== MAIN.TS START ===')
-if (typeof window !== 'undefined') {
-  window.addEventListener('DOMContentLoaded', () => {
-    const app = document.getElementById('app')
-    if (app) {
-      app.innerHTML = '<div style="color: white; padding: 20px; text-align: center;"><h1>TEST: JavaScript is running!</h1><p>If you see this, JS execution works.</p></div>'
-      console.log('=== TEST CONTENT SET ===')
-    } else {
-      console.error('=== APP DIV NOT FOUND ===')
-    }
-  }, { once: true })
-}
+
+// Global error catcher
+window.addEventListener('error', (e) => {
+  console.error('=== GLOBAL ERROR ===', e.message, e.filename, e.lineno)
+  const app = document.getElementById('app')
+  if (app) {
+    app.innerHTML = `<div style="color:white;padding:20px;"><h1 style="color:red;">Error Loading Module</h1><pre>${e.message}\n${e.filename}:${e.lineno}</pre></div>`
+  }
+})
+
+window.addEventListener('unhandledrejection', (e) => {
+  console.error('=== PROMISE REJECTION ===', e.reason)
+  const app = document.getElementById('app')
+  if (app) {
+    app.innerHTML = `<div style="color:white;padding:20px;"><h1 style="color:red;">Promise Error</h1><pre>${e.reason}</pre></div>`
+  }
+})
 
 import './style.css'
 import { getAccount, connect, disconnect, watchAccount } from '@wagmi/core'
@@ -29,12 +35,34 @@ let currentAccount: string | undefined
 
 // Initialize application with enhanced UI
 function initializeApp() {
+  console.log('=== initializeApp CALLED ===')
   const app = document.querySelector<HTMLDivElement>('#app')!
 
-  app.innerHTML = createAppHTML()
-  setupEventListeners()
-  checkWalletConnection()
-  showInfo('Welcome to Private Property Trading Platform')
+  console.log('=== APP ELEMENT FOUND ===', app)
+
+  try {
+    console.log('=== CREATING HTML ===')
+    const html = createAppHTML()
+    console.log('=== HTML CREATED, LENGTH:', html.length, '===')
+
+    app.innerHTML = html
+    console.log('=== HTML SET ===')
+
+    console.log('=== SETTING UP EVENT LISTENERS ===')
+    setupEventListeners()
+    console.log('=== EVENT LISTENERS SET ===')
+
+    console.log('=== CHECKING WALLET CONNECTION ===')
+    checkWalletConnection()
+    console.log('=== WALLET CHECK DONE ===')
+
+    console.log('=== SHOWING INFO ===')
+    showInfo('Welcome to Private Property Trading Platform')
+    console.log('=== INFO SHOWN ===')
+  } catch (error) {
+    console.error('=== ERROR IN initializeApp ===', error)
+    throw error // Re-throw to be caught by outer handler
+  }
 }
 
 function createAppHTML(): string {
@@ -666,23 +694,60 @@ function showSettingsModal() {
   })
 }
 
-// Real initialization - this will run AFTER the test above
-setTimeout(() => {
-  console.log('=== STARTING REAL INITIALIZATION ===')
-  try {
-    initializeApp()
-    console.log('=== INITIALIZATION COMPLETE ===')
-  } catch (error) {
-    console.error('=== INITIALIZATION FAILED ===', error)
-    const app = document.getElementById('app')
-    if (app) {
-      app.innerHTML = `
-        <div style="color: white; padding: 20px; text-align: center;">
-          <h1 style="color: #ef5350;">Initialization Error</h1>
-          <p>${error}</p>
-          <p>Contract: ${CONTRACT_ADDRESS || 'UNDEFINED'}</p>
-        </div>
-      `
-    }
+// Initialize when DOM is ready
+console.log('=== SETTING UP INITIALIZATION ===')
+console.log('=== SCRIPT EXECUTION POINT REACHED ===')
+
+// Force execution even if DOMContentLoaded already fired
+const initApp = () => {
+  console.log('=== INIT FUNCTION CALLED ===')
+  const app = document.getElementById('app')
+
+  if (!app) {
+    console.error('=== APP DIV NOT FOUND ===')
+    document.body.innerHTML = '<div style="color:white;padding:20px;"><h1>ERROR: #app div not found!</h1></div>'
+    return
   }
-}, 1000)
+
+  console.log('=== APP DIV FOUND ===', app)
+
+  try {
+    console.log('=== CALLING initializeApp() ===')
+    initializeApp()
+    console.log('=== ✅ INITIALIZATION SUCCESS ===')
+  } catch (error) {
+    console.error('=== ❌ INITIALIZATION ERROR ===', error)
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : 'No stack',
+      type: typeof error,
+      error: error
+    })
+
+    app.innerHTML = `
+      <div style="color:white;padding:20px;text-align:center;">
+        <h1 style="color:#ff5555;">❌ Initialization Failed</h1>
+        <pre style="text-align:left;background:rgba(0,0,0,0.5);padding:15px;border-radius:8px;margin:20px auto;max-width:800px;overflow-x:auto;">${error instanceof Error ? error.message : String(error)}
+
+${error instanceof Error && error.stack ? error.stack : 'No stack trace available'}</pre>
+        <p>Contract Address: ${CONTRACT_ADDRESS || 'UNDEFINED'}</p>
+        <p style="font-size:12px;margin-top:20px;color:#ffaa00;">⚠️ Open browser console (F12) for full error details</p>
+      </div>
+    `
+  }
+}
+
+console.log('=== REGISTERING DOM READY LISTENER ===')
+if (document.readyState === 'loading') {
+  console.log('=== Document still loading, adding listener ===')
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log('=== DOM READY EVENT FIRED ===')
+    setTimeout(initApp, 200)
+  })
+} else {
+  console.log('=== Document already ready, calling init immediately ===')
+  setTimeout(initApp, 200)
+}
+
+console.log('=== END OF MAIN.TS ===')
+console.log('=== If you see this, the entire module executed successfully ===')
