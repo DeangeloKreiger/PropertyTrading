@@ -30,7 +30,7 @@
     "security:check": "npm run audit && npm run lint:sol",
     "perf:analyze": "REPORT_GAS=true npm test",
     "quality:check": "npm run lint && npm run format:check && npm run lint:sol",
-    "prepare": "node husky/install.mjs || echo 'Husky not installed'",
+    "prepare": "node -e \"if(process.env.CI){console.log('Husky skipped in CI')}else{try{require('./husky/install.mjs')}catch(e){}}\"",
     "precommit": "lint-staged --config lintstagedrc.json"
   },
   "devDependencies": {
