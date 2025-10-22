@@ -1,6 +1,6 @@
 import './style.css'
 import { getAccount, connect, disconnect, watchAccount } from '@wagmi/core'
-import { config } from './config/wagmi'
+import { config, setWalletConnectProjectId, getWalletConnectProjectId } from './config/wagmi'
 import { injected } from '@wagmi/connectors'
 import { showError, showSuccess, showInfo } from './utils/notifications'
 import { loadingState } from './utils/loading'
@@ -38,7 +38,14 @@ function createAppHTML(): string {
               </div>
             </div>
 
-            <div id="wallet-section">
+            <div id="wallet-section" class="flex items-center gap-3">
+              <button id="settings-btn" class="btn-secondary p-2" title="Settings">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+              </button>
+
               <button id="connect-btn" class="btn-primary flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
@@ -133,6 +140,7 @@ function setupEventListeners() {
   document.getElementById('connect-btn')?.addEventListener('click', connectWallet)
   document.getElementById('disconnect-btn')?.addEventListener('click', disconnectWallet)
   document.getElementById('register-property-btn')?.addEventListener('click', showRegisterModal)
+  document.getElementById('settings-btn')?.addEventListener('click', showSettingsModal)
 
   document.getElementById('tab-marketplace')?.addEventListener('click', () => switchTab('marketplace'))
   document.getElementById('tab-my-properties')?.addEventListener('click', () => switchTab('my-properties'))
@@ -558,5 +566,103 @@ async function handlePurchase(property: Property) {
   }
 }
 
+function showSettingsModal() {
+  const modal = document.createElement('div')
+  modal.className = 'modal-overlay'
+
+  const currentProjectId = getWalletConnectProjectId()
+
+  modal.innerHTML = `
+    <div class="modal-content" style="max-width: 500px;">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold">Settings</h2>
+        <button id="close-settings-modal" class="text-2xl hover:opacity-70" style="color: var(--color-text-secondary)">&times;</button>
+      </div>
+
+      <form id="settings-form" class="space-y-5">
+        <div>
+          <label class="label flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+            </svg>
+            WalletConnect Project ID
+          </label>
+          <input
+            type="text"
+            id="project-id-input"
+            class="input-field font-mono text-sm"
+            placeholder="Enter your WalletConnect Project ID"
+            value="${currentProjectId}"
+          />
+          <p class="text-xs mt-2" style="color: var(--color-text-secondary)">
+            Get your free Project ID from <a href="https://cloud.walletconnect.com" target="_blank" class="text-accent hover:underline">cloud.walletconnect.com</a>
+          </p>
+          <p class="text-xs mt-1" style="color: var(--color-text-secondary)">
+            This is optional. If not set, only injected wallets (MetaMask) will be available.
+          </p>
+        </div>
+
+        <div class="card p-4" style="background: var(--color-panel-hover);">
+          <div class="flex items-start gap-3">
+            <svg class="w-5 h-5 mt-0.5 flex-shrink-0" style="color: var(--color-info)" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <div class="text-xs" style="color: var(--color-text-secondary)">
+              <strong>How to get Project ID:</strong><br>
+              1. Visit <a href="https://cloud.walletconnect.com/sign-in" target="_blank" class="text-accent hover:underline">cloud.walletconnect.com</a><br>
+              2. Sign up or log in<br>
+              3. Create a new project<br>
+              4. Copy the Project ID and paste it above
+            </div>
+          </div>
+        </div>
+
+        <div class="flex gap-3 pt-4">
+          <button type="submit" class="btn-primary flex-1">Save Settings</button>
+          <button type="button" id="cancel-settings" class="btn-secondary flex-1">Cancel</button>
+        </div>
+      </form>
+    </div>
+  `
+
+  document.body.appendChild(modal)
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) modal.remove()
+  })
+
+  document.getElementById('close-settings-modal')?.addEventListener('click', () => modal.remove())
+  document.getElementById('cancel-settings')?.addEventListener('click', () => modal.remove())
+
+  document.getElementById('settings-form')?.addEventListener('submit', (e) => {
+    e.preventDefault()
+    const projectId = (document.getElementById('project-id-input') as HTMLInputElement).value.trim()
+
+    if (projectId) {
+      setWalletConnectProjectId(projectId)
+      showSuccess('Settings saved! Page will reload to apply changes.')
+    } else {
+      showInfo('Project ID cleared. Only MetaMask will be available.')
+      localStorage.removeItem('walletconnect_project_id')
+      window.location.reload()
+    }
+  })
+}
+
 // Initialize
-document.addEventListener('DOMContentLoaded', initializeApp)
+console.log('Main.ts loaded')
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('DOM loaded, initializing app')
+  try {
+    initializeApp()
+  } catch (error) {
+    console.error('Failed to initialize app:', error)
+    document.getElementById('app')!.innerHTML = `
+      <div style="color: white; padding: 20px; text-align: center;">
+        <h1>Application Error</h1>
+        <p>Failed to initialize. Check console for details.</p>
+        <pre style="color: #ef5350;">${error}</pre>
+      </div>
+    `
+  }
+})
