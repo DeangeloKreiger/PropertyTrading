@@ -47,23 +47,23 @@ export async function getListedProperties(): Promise<bigint[]> {
   return result as bigint[]
 }
 
-export async function getPropertiesByOwner(owner: string): Promise<bigint[]> {
+export async function getPropertiesByOwner(owner: `0x${string}` | string): Promise<bigint[]> {
   const result = await readContract(config, {
-    address: CONTRACT_ADDRESS as `0x${string}`,
+    address: CONTRACT_ADDRESS,
     abi: ABI,
     functionName: 'getPropertiesByOwner',
-    args: [owner],
+    args: [owner as any as `0x${string}`],
   })
 
   return result as bigint[]
 }
 
-export async function getTransactionsByUser(user: string): Promise<bigint[]> {
+export async function getTransactionsByUser(user: `0x${string}` | string): Promise<bigint[]> {
   const result = await readContract(config, {
-    address: CONTRACT_ADDRESS as `0x${string}`,
+    address: CONTRACT_ADDRESS,
     abi: ABI,
     functionName: 'getTransactionsByUser',
-    args: [user],
+    args: [user as any as `0x${string}`],
   })
 
   return result as bigint[]
