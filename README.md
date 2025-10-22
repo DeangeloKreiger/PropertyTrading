@@ -9,6 +9,14 @@
 
 > A decentralized platform for private property registration, trading, and ownership management on Ethereum Sepolia testnet with complete transparency and immutable ownership records.
 
+## 🎬 Live Demo
+
+**🌐 Live Application**: [https://deangelokreiger.github.io/PropertyTrading/](https://deangelokreiger.github.io/PropertyTrading/)
+
+**📹 Demo Video**: [demo.mp4](./demo.mp4)
+
+Try the live application on Sepolia testnet! Connect your MetaMask wallet and explore property registration, listing, and trading features.
+
 ---
 
 ## ✨ Features
@@ -219,9 +227,15 @@ https://sepolia.etherscan.io/address/YOUR_CONTRACT_ADDRESS
 
 ### Current Deployment
 
-**Contract Address (Sepolia)**: `0x2f1Ec1ef0931C4208c60b5d7169CdEbAC3C9cE24`
+**Contract Address (Sepolia)**: `0xD90c73b42952565F334E5FB6C349B0005ac06669`
 
-View on Etherscan: https://sepolia.etherscan.io/address/0x2f1Ec1ef0931C4208c60b5d7169CdEbAC3C9cE24
+**Deployment Details**:
+- Transaction Hash: `0xfeb0538a05912f13e64609605577969436d0c18a7264583b537c2d1aa2b9aa2e`
+- Deployed: 2025-10-21
+- Network: Ethereum Sepolia Testnet
+- Chain ID: 11155111
+
+View on Etherscan: https://sepolia.etherscan.io/address/0xD90c73b42952565F334E5FB6C349B0005ac06669
 
 ### Update Frontend Configuration
 
@@ -681,6 +695,7 @@ If you encounter any issues or have questions:
 
 **Built with ❤️ for decentralized property trading**
 
-**Last Updated**: 2025-10-19
+**Last Updated**: 2025-10-21
 **Version**: 1.0.0
 **Status**: ✅ Production Ready
+**Live Demo**: https://deangelokreiger.github.io/PropertyTrading/

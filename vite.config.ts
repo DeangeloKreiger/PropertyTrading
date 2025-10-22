@@ -2,7 +2,9 @@ import { defineConfig } from 'vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: './',
+  // Set base path for GitHub Pages deployment
+  // Use '/PropertyTrading/' for GitHub Pages, './' for local development
+  base: process.env.NODE_ENV === 'production' ? '/PropertyTrading/' : './',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
