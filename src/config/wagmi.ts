@@ -4,8 +4,11 @@ import { injected, walletConnect } from '@wagmi/connectors'
 
 // Get WalletConnect Project ID from localStorage or environment variable
 const getProjectId = () => {
-  const stored = localStorage.getItem('walletconnect_project_id')
-  if (stored) return stored
+  // Check if we're in a browser environment
+  if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+    const stored = localStorage.getItem('walletconnect_project_id')
+    if (stored) return stored
+  }
 
   const envId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID
   if (envId && envId !== 'YOUR_WALLETCONNECT_PROJECT_ID') {
