@@ -307,10 +307,10 @@ Based on analysis of 169 competition projects:
 ## 🎨 Design Inspiration
 
 This design system is inspired by:
-1. **Competition Winners**: case100-171 top projects
-2. **Modern Web3 Apps**: Uniswap, Aave, Compound
-3. **Design Trends**: Glassmorphism, Neumorphism 2.0
-4. **Best Practices**: Material Design 3, Apple HIG
+1. **Modern Web3 Apps**: Uniswap, Aave, Compound
+2. **Design Trends**: Glassmorphism, Neumorphism 2.0
+3. **Best Practices**: Material Design 3, Apple HIG
+4. **Industry Leaders**: Award-winning blockchain platforms
 
 ---
 
