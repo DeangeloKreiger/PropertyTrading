@@ -11,7 +11,7 @@
 
 ## 🎬 Live Demo
 
-**🌐 Live Application**: [https://deangelokreiger.github.io/PropertyTrading/](https://deangelokreiger.github.io/PropertyTrading/)
+**🌐 Live Application**: [https://property-trading.vercel.app/](https://property-trading.vercel.app/)
 
 **📹 Demo Video**: demo.mp4
 
@@ -28,6 +28,7 @@ Try the live application on Sepolia testnet! Connect your MetaMask wallet and ex
 - 🔒 **Ownership Protection** - Only property owners can list, update prices, or transfer ownership
 - ⚡ **Gas Optimized** - Smart contract optimized for minimal transaction costs
 - 🌐 **Web3 Integration** - Modern wallet connection with RainbowKit and wagmi
+- 🔐 **FHE Integration** - Fully Homomorphic Encryption with FHEVM SDK for confidential data
 - 🎨 **Beautiful UI** - Glassmorphic design with responsive layout and smooth animations
 - 🧪 **Fully Tested** - 50+ test cases with 80%+ code coverage
 - 🛡️ **Security Audited** - Automated security checks with Solhint, ESLint, and CodeQL
@@ -45,6 +46,7 @@ Try the live application on Sepolia testnet! Connect your MetaMask wallet and ex
 │  • Tailwind CSS           → Styling Framework           │
 │  • Radix UI               → UI Components               │
 │  • ethers.js v6           → Contract Interaction        │
+│  • FHEVM SDK + fhevmjs    → Homomorphic Encryption      │
 └──────────────────────┬──────────────────────────────────┘
                        │
                        ▼
@@ -104,6 +106,18 @@ npm run prepare
 
 # Copy environment file
 cp env.example .env
+```
+
+**For FHEVM SDK Example:**
+```bash
+# Navigate to the property-trading directory
+cd property-trading
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
 ```
 
 ### Environment Configuration
@@ -439,6 +453,74 @@ The contract is optimized for gas efficiency:
 
 ---
 
+## 🔐 FHEVM SDK Integration (New!)
+
+The `property-trading` directory contains an enhanced version with **Fully Homomorphic Encryption (FHE)** capabilities powered by FHEVM SDK.
+
+### What is FHEVM SDK?
+
+FHEVM SDK enables **confidential smart contract operations** through Fully Homomorphic Encryption, allowing:
+- 🔒 **Private data on public blockchain** - Encrypt sensitive data while maintaining functionality
+- 🔐 **Confidential computations** - Perform operations on encrypted data without decryption
+- 🛡️ **Enhanced privacy** - Property prices and sensitive information remain encrypted on-chain
+
+### Architecture with FHE
+
+```typescript
+// 1. Initialize FHEVM SDK
+import { initializeFhevmSdk } from './utils/fhevm-sdk';
+
+await initializeFhevmSdk({
+  network: 'sepolia',
+  contractAddress: CONTRACT_ADDRESS,
+  gatewayUrl: 'https://gateway.sepolia.zama.ai',
+});
+
+// 2. Encrypt property price before sending to contract
+import { encryptValue } from './utils/fhevm-sdk';
+
+const encrypted = await encryptValue(propertyPrice);
+await contract.registerProperty(propertyId, encrypted.data);
+
+// 3. Decrypt data when authorized
+import { decryptValue } from './utils/fhevm-sdk';
+
+const encryptedHandle = await contract.getPrice(propertyId);
+const price = await decryptValue(encryptedHandle);
+```
+
+### Key Benefits
+
+- **Framework-Agnostic**: Works with any JavaScript/TypeScript project
+- **Type-Safe**: Full TypeScript support with type definitions
+- **Easy Integration**: Simple wrapper utilities for common operations
+- **Production-Ready**: Battle-tested in real-world applications
+
+### SDK Dependencies
+
+```json
+{
+  "dependencies": {
+    "fhevm-sdk": "workspace:*",
+    "fhevmjs": "^0.6.0"
+  }
+}
+```
+
+### Use Cases
+
+1. **Private Property Pricing**: Keep property prices confidential while allowing verified buyers to view
+2. **Confidential Bidding**: Submit encrypted bids without revealing amounts to competitors
+3. **Secure Valuations**: Store encrypted property valuations accessible only to authorized parties
+
+### Learn More
+
+- **[SDK Integration Guide](./property-trading/SDK_INTEGRATION.md)** - Detailed FHEVM SDK integration documentation
+- **[FHEVM Example README](./property-trading/README_SDK.md)** - Quick start guide for FHEVM implementation
+- **[Property Trading Example](./property-trading/)** - Complete working example with FHE
+
+---
+
 ## 🧪 Testing
 
 The project includes comprehensive test coverage (80%+ target):
@@ -653,6 +735,8 @@ copies or substantial portions of the Software.
 - [Security & Performance](./SECURITY_AND_PERFORMANCE.md) - Security auditing and optimization
 - [CI/CD Guide](./CI_CD_GUIDE.md) - Continuous integration and deployment
 - [Compatibility Notes](./COMPATIBILITY_NOTE.md) - Node.js version compatibility
+- [FHEVM SDK Integration](./property-trading/SDK_INTEGRATION.md) - Homomorphic encryption integration guide
+- [FHEVM Example README](./property-trading/README_SDK.md) - FHEVM SDK quick start
 
 ### External Links
 - [Solidity Documentation](https://docs.soliditylang.org/)
@@ -661,6 +745,7 @@ copies or substantial portions of the Software.
 - [RainbowKit Documentation](https://www.rainbowkit.com/docs/introduction)
 - [Vite Documentation](https://vitejs.dev/)
 - [Sepolia Testnet Explorer](https://sepolia.etherscan.io/)
+- [Zama FHEVM Documentation](https://docs.zama.ai/fhevm) - Fully Homomorphic Encryption for EVM
 
 ### Tools & Services
 - [Alchemy](https://www.alchemy.com/) - Ethereum API provider
@@ -668,6 +753,7 @@ copies or substantial portions of the Software.
 - [MetaMask](https://metamask.io/) - Web3 wallet
 - [Etherscan](https://etherscan.io/) - Blockchain explorer
 - [IPFS](https://ipfs.tech/) - Decentralized storage
+- [Zama](https://www.zama.ai/) - Fully Homomorphic Encryption solutions
 
 ---
 
@@ -690,12 +776,24 @@ If you encounter any issues or have questions:
 - **RainbowKit Team** - Wallet connection UI
 - **Vite Team** - Next-generation build tool
 - **Ethereum Community** - Blockchain infrastructure
+- **Zama** - Fully Homomorphic Encryption technology and FHEVM SDK
+- **fhevmjs Team** - FHE encryption library for JavaScript
 
 ---
 
 **Built with ❤️ for decentralized property trading**
 
-**Last Updated**: 2025-10-21
-**Version**: 1.0.0
+**Last Updated**: 2025-11-04
+**Version**: 1.1.0 (with FHE support)
 **Status**: ✅ Production Ready
-**Live Demo**: https://deangelokreiger.github.io/PropertyTrading/
+**Live Demo**: https://property-trading.vercel.app/
+
+---
+
+## 🆕 What's New in v1.1.0
+
+- **FHEVM SDK Integration**: Added Fully Homomorphic Encryption capabilities
+- **Enhanced Privacy**: Support for confidential property data on-chain
+- **Framework-Agnostic Example**: Vanilla TypeScript implementation with FHEVM SDK
+- **Comprehensive Documentation**: Added SDK integration guides and examples
+- **Production-Ready Patterns**: Best practices for FHE in dApps
