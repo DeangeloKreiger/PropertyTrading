@@ -13,7 +13,7 @@
 
 **🌐 Live Application**: [https://property-trading.vercel.app/](https://property-trading.vercel.app/)
 
-**📹 Demo Video**: demo.mp4
+**📹 Demo Video**: demo.mp4 https://streamable.com/p0hbgl
 
 Try the live application on Sepolia testnet! Connect your MetaMask wallet and explore property registration, listing, and trading features.
 
